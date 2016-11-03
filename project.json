@@ -1,5 +1,13 @@
 ﻿{
+  "name": "Warden.Common",
+  "authors": ["Piotr Gankiewicz"],
   "title": "Warden.Common",
+  "version": "1.0.0-*",
+  "packOptions": {
+    "licenseUrl": "https://github.com/warden-stack/Warden.Common/blob/master/README.md",
+    "projectUrl": "https://github.com/warden-stack/Warden.Common",
+    "packageType": "DotnetCliTool"
+  },
   "version": "1.0.0-*",
   "dependencies": {
     "NETStandard.Library": "1.6.0",

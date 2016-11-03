@@ -8,7 +8,6 @@
     "projectUrl": "https://github.com/warden-stack/Warden.Common",
     "packageType": "DotnetCliTool"
   },
-  "version": "1.0.0-*",
   "dependencies": {
     "NETStandard.Library": "1.6.0",
     "Autofac": "4.1.0",

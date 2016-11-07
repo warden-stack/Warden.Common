@@ -8,7 +8,7 @@ namespace Warden.Common.Extensions
         {
             if (string.IsNullOrWhiteSpace(section))
             {
-                section = typeof(T).Name.Replace("Settings", string.Empty);
+                section = typeof(T).Name.Replace("Settings", string.Empty).Replace("Configuration", string.Empty);
             }
 
             var configurationValue = new T();

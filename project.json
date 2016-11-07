@@ -30,7 +30,6 @@
     "StackExchange.Redis": "1.1.608"
   },
   "frameworks": {
-    "net461": {},
     "netstandard1.6": {
       "imports": [
         "dotnet5.6",

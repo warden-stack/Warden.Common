@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Nancy;
 using Nancy.Responses.Negotiation;
+using NLog;
 using Warden.Common.Extensions;
 using Warden.Common.Queries;
 using Warden.Common.Types;
@@ -11,29 +14,48 @@ namespace Warden.Common.Nancy
 {
     public class FetchRequestHandler<TQuery, TResult> where TQuery : IQuery, new() where TResult : class
     {
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly string PageParameter = "page";
         private readonly TQuery _query;
         private readonly Func<TQuery, Task<Maybe<TResult>>> _fetch;
         private readonly Func<TQuery, Task<Maybe<PagedResult<TResult>>>> _fetchCollection;
         private readonly Negotiator _negotiator;
         private readonly Url _url;
+        private readonly IMapper _autoMapper;
+        private Func<TResult, object> _mapper;
 
         public FetchRequestHandler(TQuery query, Func<TQuery, Task<Maybe<TResult>>> fetch, Negotiator negotiator,
-            Url url)
+            Url url, IMapper autoMapper = null)
         {
             _query = query;
             _fetch = fetch;
             _negotiator = negotiator;
             _url = url;
+            _autoMapper = autoMapper;
         }
 
         public FetchRequestHandler(TQuery query, Func<TQuery, Task<Maybe<PagedResult<TResult>>>> fetchCollection,
-            Negotiator negotiator, Url url)
+            Negotiator negotiator, Url url, IMapper autoMapper = null)
         {
             _query = query;
             _fetchCollection = fetchCollection;
             _negotiator = negotiator;
             _url = url;
+            _autoMapper = autoMapper;
+        }
+
+        public FetchRequestHandler<TQuery, TResult> MapTo(Func<TResult, object> mapper)
+        {
+            _mapper = mapper;
+
+            return this;
+        }
+
+        public FetchRequestHandler<TQuery, TResult> MapTo<T>()
+        {
+            _mapper = x => _autoMapper.Map<T>(x);
+
+            return this;
         }
 
         public async Task<Negotiator> HandleAsync()
@@ -62,17 +84,27 @@ namespace Warden.Common.Nancy
         private Negotiator FromResult(Maybe<TResult> result)
         {
             if (result.HasNoValue)
+            {
+                _logger.Debug($"Result of {_query.GetType().Name} has no value {typeof(TResult).Name}");
                 return _negotiator.WithStatusCode(HttpStatusCode.NotFound);
+            }
+            _logger.Debug($"Result of {_query.GetType().Name} contains {typeof(TResult).Name} object");
+            var model = _mapper == null ? result.Value : _mapper(result.Value);
 
-            return _negotiator.WithModel(result.Value);
+            return _negotiator.WithModel(model);
         }
 
         private Negotiator FromPagedResult(Maybe<PagedResult<TResult>> result)
         {
             if (result.HasNoValue)
+            {
+                _logger.Debug($"Result of {_query.GetType().Name} has no value {typeof(TResult).Name}");
                 return _negotiator.WithModel(new List<object>());
+            }
+            _logger.Debug($"Result of {_query.GetType().Name} contains {result.Value.TotalResults} {typeof(TResult).Name} elements");
+            var model = _mapper == null ? result.Value.Items : result.Value.Items.Select(x => _mapper(x));
 
-            return _negotiator.WithModel(result.Value.Items)
+            return _negotiator.WithModel(model)
                 .WithHeader("Link", GetLinkHeader(result.Value))
                 .WithHeader("X-Total-Count", result.Value.TotalResults.ToString());
         }

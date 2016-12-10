@@ -26,6 +26,7 @@
     "NLog.Extensions.Logging": "1.0.0-*",
     "Nancy": "2.0.0-barneyrubble",
     "Newtonsoft.Json": "9.0.1",
+    "Polly": "5.0.2-v5-0-alpha0001",
     "RawRabbit": "1.10.0",
     "RawRabbit.vNext": "1.10.0",
     "StackExchange.Redis": "1.1.608"

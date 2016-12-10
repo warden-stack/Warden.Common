@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Options;
 using MongoDB.Driver;
 
 namespace Warden.Common.Mongo
@@ -40,7 +41,8 @@ namespace Warden.Common.Mongo
             {
                 new IgnoreExtraElementsConvention(true),
                 new EnumRepresentationConvention(BsonType.String),
-                new CamelCaseElementNameConvention()
+                new CamelCaseElementNameConvention(),
+                new DictionaryRepresentationConvention(DictionaryRepresentation.ArrayOfArrays),
             };
         }
     }

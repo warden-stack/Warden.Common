@@ -9,10 +9,19 @@ namespace Warden.Common.Handlers
     {
         IHandlerTask Always(Action always);
         IHandlerTask Always(Func<Task> always);
-        IHandlerTask OnCustomError(Action<WardenException> onCustomError, bool propagateException = false);
-        IHandlerTask OnCustomError(Action<WardenException, Logger> onCustomError, bool propagateException = false);
-        IHandlerTask OnCustomError(Func<WardenException, Task> onCustomError, bool propagateException = false);
-        IHandlerTask OnCustomError(Func<WardenException, Logger, Task> onCustomError, bool propagateException = false);
+
+        IHandlerTask OnCustomError(Action<WardenException> onCustomError,
+            bool propagateException = false, bool executeOnError = false);
+
+        IHandlerTask OnCustomError(Action<WardenException, Logger> onCustomError,
+            bool propagateException = false, bool executeOnError = false);
+
+        IHandlerTask OnCustomError(Func<WardenException, Task> onCustomError,
+            bool propagateException = false, bool executeOnError = false);
+
+        IHandlerTask OnCustomError(Func<WardenException, Logger, Task> onCustomError,
+            bool propagateException = false, bool executeOnError = false);
+
         IHandlerTask OnError(Action<Exception> onError, bool propagateException = false);
         IHandlerTask OnError(Action<Exception, Logger> onError, bool propagateException = false);
         IHandlerTask OnError(Func<Exception, Task> onError, bool propagateException = false);

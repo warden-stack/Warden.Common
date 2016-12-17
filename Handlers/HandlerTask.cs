@@ -24,6 +24,7 @@ namespace Warden.Common.Handlers
         private Func<WardenException, Task> _onCustomErrorAsync;
         private Func<WardenException, Logger, Task> _onCustomErrorWithLoggerAsync;
         private bool _propagateException = true;
+        private bool _executeOnError = true;
 
         public HandlerTask(IHandler handler, Action run)
         {
@@ -51,34 +52,42 @@ namespace Warden.Common.Handlers
             return this;
         }
 
-        public IHandlerTask OnCustomError(Action<WardenException> onCustomError, bool propagateException = false)
+        public IHandlerTask OnCustomError(Action<WardenException> onCustomError,
+            bool propagateException = false, bool executeOnError = false)
         {
             _onCustomError = onCustomError;
             _propagateException = propagateException;
+            _executeOnError = executeOnError;
 
             return this;
         }
 
-        public IHandlerTask OnCustomError(Action<WardenException, Logger> onCustomError, bool propagateException = false)
+        public IHandlerTask OnCustomError(Action<WardenException, Logger> onCustomError,
+            bool propagateException = false, bool executeOnError = false)
         {
             _onCustomErrorWithLogger = onCustomError;
             _propagateException = propagateException;
+            _executeOnError = executeOnError;
 
             return this;
         }
 
-        public IHandlerTask OnCustomError(Func<WardenException, Task> onCustomError, bool propagateException = false)
+        public IHandlerTask OnCustomError(Func<WardenException, Task> onCustomError,
+            bool propagateException = false, bool executeOnError = false)
         {
             _onCustomErrorAsync = onCustomError;
             _propagateException = propagateException;
+            _executeOnError = executeOnError;
 
             return this;
         }
 
-        public IHandlerTask OnCustomError(Func<WardenException, Logger, Task> onCustomError, bool propagateException = false)
+        public IHandlerTask OnCustomError(Func<WardenException, Logger, Task> onCustomError,
+            bool propagateException = false, bool executeOnError = false)
         {
             _onCustomErrorWithLoggerAsync = onCustomError;
             _propagateException = propagateException;
+            _executeOnError = executeOnError;
 
             return this;
         }
@@ -160,8 +169,13 @@ namespace Warden.Common.Handlers
                     _onCustomErrorWithLogger?.Invoke(customException, Logger);
                     _onCustomError?.Invoke(customException);
                 }
-                _onErrorWithLogger?.Invoke(customException, Logger);
-                _onError?.Invoke(exception);
+
+                var executeOnError = _executeOnError || customException == null;
+                if(executeOnError)
+                {
+                    _onErrorWithLogger?.Invoke(customException, Logger);
+                    _onError?.Invoke(exception);
+                }
                 if(_propagateException)
                 {
                     throw;
@@ -199,15 +213,20 @@ namespace Warden.Common.Handlers
                         await _onCustomErrorAsync(customException);
                     }
                 }
-                _onErrorWithLogger?.Invoke(customException, Logger);
-                if (_onErrorWithLoggerAsync != null)
+
+                var executeOnError = _executeOnError || customException == null;
+                if(executeOnError)
                 {
-                    await _onErrorWithLoggerAsync(exception, Logger);
-                }
-                _onError?.Invoke(exception);
-                if (_onErrorAsync != null)
-                {
-                    await _onErrorAsync(exception);
+                    _onErrorWithLogger?.Invoke(customException, Logger);
+                    if (_onErrorWithLoggerAsync != null)
+                    {
+                        await _onErrorWithLoggerAsync(exception, Logger);
+                    }
+                    _onError?.Invoke(exception);
+                    if (_onErrorAsync != null)
+                    {
+                        await _onErrorAsync(exception);
+                    }
                 }
                 if(_propagateException)
                 {

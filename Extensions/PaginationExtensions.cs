@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
+using Nancy.Helpers;
 using Warden.Common.Queries;
 using Warden.Common.Types;
 
@@ -28,7 +31,7 @@ namespace Warden.Common.Extensions
                 return PagedResult<T>.Empty;
 
             var totalResults = values.Count();
-            var totalPages = (int)Math.Ceiling((decimal)totalResults / resultsPerPage);
+            var totalPages = (int) Math.Ceiling((decimal) totalResults/resultsPerPage);
             var data = values.Limit(page, resultsPerPage).ToList();
 
             return PagedResult<T>.Create(data, page, resultsPerPage, totalPages, totalResults);
@@ -46,11 +49,67 @@ namespace Warden.Common.Extensions
             if (resultsPerPage <= 0)
                 resultsPerPage = 10;
 
-            var skip = (page - 1) * resultsPerPage;
+            var skip = (page - 1)*resultsPerPage;
             var data = collection.Skip(skip)
                 .Take(resultsPerPage);
 
             return data;
+        }
+
+        public static PagedResult<T> ToPagedResult<T>(this IEnumerable<T> collection, HttpResponseHeaders headers)
+        {
+            var items = collection?.ToArray() ?? Enumerable.Empty<T>().ToArray();
+            if (items.Any() == false)
+                return PagedResult<T>.Empty;
+
+            IEnumerable<string> xTotalCountHeaders;
+            IEnumerable<string> linkHeaders;
+            if (headers.TryGetValues("X-Total-Count", out xTotalCountHeaders) == false
+                || headers.TryGetValues("Link", out linkHeaders) == false)
+            {
+                return items.PaginateWithoutLimit();
+            }
+
+            var totalResults = xTotalCountHeaders.First();
+            var totalResultsInt = int.Parse(totalResults);
+
+            var link = linkHeaders.First();
+            var totalPages = int.Parse(GetValueFromLink(link, "last", "page"));
+
+            var currentPage = 0;
+            var nextPage = GetValueFromLink(link, "next", "page");
+            var prevPage = GetValueFromLink(link, "prev", "page");
+            if (nextPage != null)
+                currentPage = int.Parse(nextPage) - 1;
+            else if (prevPage != null)
+                currentPage = int.Parse(prevPage) + 1;
+
+            var resultsPerPage = int.Parse(GetValueFromLink(link, "first", "results"));
+
+            return PagedResult<T>.Create(items, currentPage, resultsPerPage, totalPages, totalResultsInt);
+        }
+
+        private static string GetValueFromLink(string link, string rel, string paramName)
+        {
+            const string relRegex = "rel=..([a-z])+..";
+            const string urlRegex = @"\b(?:https?://|www\.)\S+\b";
+
+            var rels = Regex.Matches(link, relRegex)
+                .Cast<Match>()
+                .Select(match => match.Value)
+                .ToList();
+            var index = rels.FindIndex(s => s.Contains(rel));
+
+            if (index < 0)
+                return null;
+
+            var links = Regex.Matches(link, urlRegex);
+            var specificLink = links[index].Value;
+
+            var uri = new Uri(specificLink);
+            var param = HttpUtility.ParseQueryString(uri.Query).Get(paramName);
+
+            return param;
         }
     }
 }

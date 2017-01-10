@@ -2,8 +2,8 @@
 
 namespace Warden.Common.Events
 {
-    public interface IEvent
-    {
-        Guid RequestId { get; }
-    }
+public interface IEvent
+{
+    Guid RequestId { get; }
+}
 }

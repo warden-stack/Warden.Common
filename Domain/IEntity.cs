@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using Warden.Common.Events;
-
-namespace Warden.Common.Domain
+﻿namespace Warden.Common.Domain
 {
+    //Marker interface.
     public interface IEntity
     {
-        IEnumerable<IEvent> Events { get; }
     }
 }

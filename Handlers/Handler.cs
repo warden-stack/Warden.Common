@@ -30,6 +30,7 @@ namespace Warden.Common.Handlers
             {
                 handlerTask.Execute();
             }
+            _handlerTasks.Clear();
         }
 
         public async Task ExecuteAllAsync()
@@ -38,6 +39,7 @@ namespace Warden.Common.Handlers
             {
                 await handlerTask.ExecuteAsync();
             }
+            _handlerTasks.Clear();
         }
     }
 }

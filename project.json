@@ -31,7 +31,7 @@
     "Polly": "5.0.2-v5-0-alpha0001",
     "RawRabbit": "1.10.0",
     "RawRabbit.vNext": "1.10.0",
-    "StackExchange.Redis": "1.1.608"
+    "StackExchange.Redis": "1.2.0"
   },
   "frameworks": {
     "netcoreapp1.1": {

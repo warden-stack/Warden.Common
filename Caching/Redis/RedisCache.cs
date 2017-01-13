@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using NLog;
 using StackExchange.Redis;
 using Warden.Common.Extensions;
 using Warden.Common.Types;
@@ -9,6 +10,7 @@ namespace Warden.Common.Caching.Redis
 {
     public class RedisCache : ICache
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IDatabase _database;
         private readonly RedisSettings _settings;
 
@@ -16,6 +18,7 @@ namespace Warden.Common.Caching.Redis
         {
             _database = database;
             _settings = settings;
+            Logger.Debug($"Initialized Redis service for database {settings.Database}, enabled: '{settings.Enabled}'.");
         }
 
         public async Task<Maybe<T>> GetAsync<T>(string key) where T : class
@@ -24,7 +27,15 @@ namespace Warden.Common.Caching.Redis
                 return default(T);
 
             var fixedKey = key.ToLowerInvariant();
+            if (_settings.UseLogger)
+            {
+                Logger.Debug($"Fetching entry for key: '{fixedKey}'.");
+            }
             var value = Deserialize<T>(await _database.StringGetAsync(fixedKey));
+            if (value == null)
+            {
+                Logger.Debug($"Entry for key: '{fixedKey}' is null.");
+            }
 
             return value;
         }
@@ -34,9 +45,17 @@ namespace Warden.Common.Caching.Redis
             if(!_settings.Enabled)
                 return;
 
+            if (_settings.UseLogger)
+            {
+                Logger.Debug($"Saving entry for key: '{key}' with expiry: {expiry}.");
+            }
             var fixedKey = key.ToLowerInvariant();
             var obj = Serialize(value);
             await _database.StringSetAsync(fixedKey, obj, expiry);
+            if (_settings.UseLogger)
+            {
+                Logger.Debug($"Entry for key: '{key}' with expiry: {expiry} was saved.");
+            }
         }
 
         public async Task DeleteAsync(string key)
@@ -44,8 +63,16 @@ namespace Warden.Common.Caching.Redis
             if (!_settings.Enabled)
                 return;
 
+            if (_settings.UseLogger)
+            {
+                Logger.Debug($"Deleting data for key: '{key}'.");
+            }
             var fixedKey = key.ToLowerInvariant();
             await AddAsync(fixedKey, null, TimeSpan.FromMilliseconds(1));
+            if (_settings.UseLogger)
+            {
+                Logger.Debug($"Entry for key: '{key}' was deleted.");
+            }
         }
 
         private static string Serialize<T>(T value) => JsonConvert.SerializeObject(value);

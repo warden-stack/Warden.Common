@@ -5,5 +5,6 @@
         public string ConnectionString { get; protected set; }
         public int Database { get; protected set; }
         public bool Enabled { get; protected set; }
+        public bool UseLogger { get; protected set; }
     }
 }

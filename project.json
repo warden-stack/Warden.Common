@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "Warden.Messages": "1.0.*",
+    "NETStandard.Library": "1.6.1",
     "Autofac": "4.1.0",
     "AutoMapper": "5.2.0",
     "Exceptionless": "4.0.1922",
@@ -35,13 +36,6 @@
     "StackExchange.Redis": "1.2.0"
   },
   "frameworks": {
-    "netcoreapp1.1": {
- 			"dependencies": {
-	    	"Microsoft.NETCore.App": {
-					"type": "platform",
-					"version": "1.1.0"
-	    	}
-    	}
-		}
+    "netstandard1.6": {}
   }
 }

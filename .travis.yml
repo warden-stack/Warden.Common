@@ -1,0 +1,12 @@
+language: csharp
+dist: trusty
+sudo: required
+mono: none
+dotnet: 1.0.0-preview2-1-003177
+before_script:
+  - chmod a+x ./travis-build.sh
+  - chmod a+x ./after-success.sh
+script:
+  - ./travis-build.sh
+after_success:
+  - ./after-success.sh 

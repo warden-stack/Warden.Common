@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using RawRabbit;
 using RawRabbit.Common;
-using Warden.Common.Commands;
-using Warden.Common.Events;
+using Warden.Messages.Commands;
+using Warden.Messages.Events;
 
 namespace Warden.Common.Extensions
 {

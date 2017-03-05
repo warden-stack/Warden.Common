@@ -9,6 +9,7 @@
     "packageType": "DotnetCliTool"
   },
   "dependencies": {
+    "Warden.Messages": "1.0.*",
     "Autofac": "4.1.0",
     "AutoMapper": "5.2.0",
     "Exceptionless": "4.0.1922",

@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using Autofac;
 using RawRabbit;
-using Warden.Common.Commands;
-using Warden.Common.Events;
+using Warden.Messages.Commands;
+using Warden.Messages.Events;
 using Microsoft.AspNetCore.Hosting;
 using Warden.Common.Extensions;
 

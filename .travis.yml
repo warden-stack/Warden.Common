@@ -9,4 +9,8 @@ before_script:
 script:
   - ./travis-build.sh
 after_success:
-  - ./after-success.sh 
+  - ./after-success.sh
+notifications:
+  email:
+    on_success: never
+    on_failure: always

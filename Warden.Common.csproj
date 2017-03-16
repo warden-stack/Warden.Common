@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="Warden.Messages" Version="1.0.*" />
-    <PackageReference Include="Warden.Services.Storage.Models" Version="1.0.*" />
     <PackageReference Include="AutoMapper" Version="5.2.0" />
     <PackageReference Include="Exceptionless" Version="4.0.1922" />
     <PackageReference Include="Humanizer.Core" Version="2.1.0" />

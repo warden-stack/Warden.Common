@@ -6,5 +6,5 @@ case "$TRAVIS_BRANCH" in
     ;;
 esac
 
-dotnet restore --source --source "https://api.nuget.org/v3/index.json" --source "https://www.myget.org/F/warden$MYGET_ENV/api/v3/index.json" --no-cache
+dotnet restore --source "https://api.nuget.org/v3/index.json" --source "https://www.myget.org/F/warden$MYGET_ENV/api/v3/index.json" --no-cache
 dotnet build

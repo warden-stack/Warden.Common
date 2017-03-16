@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyTitle>Warden.Common</AssemblyTitle>
+    <Authors>Piotr Gankiewicz</Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>Warden.Common</AssemblyName>
+    <PackageId>Warden.Common</PackageId>
+    <PackageProjectUrl>https://github.com/warden-stack/Warden.Common</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/warden-stack/Warden.Common/blob/master/README.md</PackageLicenseUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Warden.Messages" Version="1.0.*" />
+    <PackageReference Include="Warden.Services.Storage.Models" Version="1.0.*" />
+    <PackageReference Include="AutoMapper" Version="5.2.0" />
+    <PackageReference Include="Exceptionless" Version="4.0.1922" />
+    <PackageReference Include="Humanizer.Core" Version="2.1.0" />
+    <PackageReference Include="jose-jwt" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-*" />
+    <PackageReference Include="MongoDB.Driver" Version="2.4.1" />
+    <PackageReference Include="Nancy" Version="2.0.0-clinteastwood" />
+    <PackageReference Include="Nancy.Authentication.Stateless" Version="2.0.0-clinteastwood" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Polly" Version="5.0.2-v5-0-alpha0001" />
+    <PackageReference Include="RawRabbit" Version="1.10.0" />
+    <PackageReference Include="RawRabbit.vNext" Version="1.10.0" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.0" />
+  </ItemGroup>
+
+</Project>

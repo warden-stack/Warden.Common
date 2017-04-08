@@ -25,6 +25,7 @@ namespace Warden.Common.Handlers
         private Func<WardenException, Logger, Task> _onCustomErrorWithLoggerAsync;
         private bool _propagateException = true;
         private bool _executeOnError = true;
+        private bool _executeOnSuccess = true;
 
         public HandlerTask(IHandler handler, Action run)
         {
@@ -138,6 +139,13 @@ namespace Warden.Common.Handlers
             return this;
         }
 
+        public IHandlerTask SkipOnSuccess()
+        {
+            _executeOnSuccess = false;
+
+            return this;
+        }
+
         public IHandlerTask PropagateException()
         {
             _propagateException = true;
@@ -159,7 +167,10 @@ namespace Warden.Common.Handlers
             try
             {
                 _run();
-                _onSuccess?.Invoke();
+                if(_executeOnSuccess)
+                {
+                    _onSuccess?.Invoke();
+                }
             }
             catch (Exception exception)
             {
@@ -192,9 +203,9 @@ namespace Warden.Common.Handlers
             try
             {
                 await _runAsync();
-                if(_onSuccessAsync != null)
+                if(_executeOnSuccess)
                 {
-                    await _onSuccessAsync();
+                    await _onSuccessAsync?.Invoke();
                 }
             }
             catch (Exception exception)

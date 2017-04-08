@@ -28,6 +28,7 @@ namespace Warden.Common.Handlers
         IHandlerTask OnError(Func<Exception, Logger, Task> onError, bool propagateException = false);
         IHandlerTask OnSuccess(Action onSuccess);
         IHandlerTask OnSuccess(Func<Task> onSuccess);
+        IHandlerTask SkipOnSuccess();
         IHandlerTask PropagateException();
         IHandlerTask DoNotPropagateException();
         IHandler Next();
